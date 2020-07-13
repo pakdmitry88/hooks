@@ -1,38 +1,54 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 const MyContext = React.createContext();
 
 const App = () => {
-  return (
-  <div>
-    <MyContext.Provider value='Hello World!!!'>
-    <Child/>
-      </MyContext.Provider>
-  </div>
-  );
+
+  const [value, setValue] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  if(visible) {
+    return (
+      <div>
+        <button
+          onClick={() => setValue((v) => v + 1)}>+</button>
+          <button
+          onClick={() => setVisible((false))}>Hide!</button>
+          <Notification />
+      </div>
+    );
+
+  }else {
+    return <button
+    onClick={() => setVisible((true))}>Show!</button>
+  }
+
 }
 
+const HookCounter = ({ value }) => {
 
-const Child = () =>{
+  useEffect(() => console.log('mount'), []); //componentDidMount
+  useEffect(() => console.log('update')); // componentDidUpdate
+  useEffect(() => () => console.log('unmount'), []);
 
-  const value  = useContext(MyContext)
+    
+return <p>{ value }</p>
+}
+
+const Notification = () => {
+
+  const [ visible, setVisible ] = useState(true);
+  useEffect(() => {
+   const timeout =  setTimeout(() => setVisible(false), 2500);
+   return () => clearTimeout(timeout);
+  }, []);
   return (
-  <p>{value}</p>
+    <div>
+      { visible && <p>Hello!</p>}
+    </div>
   )
 }
-
-//   return (
-//     <div style={{padding: '10px', 
-//                  backgroundColor: color,
-//                 fontSize: fontSize}}>
-//                 HELLO WORLD! Now font Size {fontSize}
-//       <button onClick={() => setColor('grey')}>Dark</button>
-//       <button onClick={() => setColor('white')}>Ligth</button>
-//       <button onClick={() => setFontSize((size) => size + 10)}>Font size</button>
-//     </div>
-//   )
-// }
 
 
 ReactDOM.render(
